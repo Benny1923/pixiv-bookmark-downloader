@@ -44,12 +44,14 @@ function Login() {
 		header: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'},
 		form: {'password': password, 'pixiv_id': username, 'post_key': device_token}
 	}, function (e,r,b) {
-		if (!e && JSON.parse(b).error == false) {
+		if (!e && JSON.parse(b).error == false && JSON.parse(b).body.success) {
 			cookie = request.cookie("device_token=" + device_token);
 			console.log('Login success!');
 			Hello();
+		} else if (!e && JSON.parse(b).body.validation_errors.pixiv_id) {
+			console.log('Login fail! Please check your username or password');
 		} else {
-			console.log('Login fail');
+			console.log("ERROR at step 2(Login):" + e);
 		}
 	});
 }
@@ -72,7 +74,7 @@ function GetAllBookmark() {
 	items = data["numofdata"];
 	isEnd = false;
 	count = 1;
-	console.console.log("Start getting bookmark...");
+	console.log("Start getting bookmark...");
 	async.whilst(function(){
 		return !isEnd;
 	},
