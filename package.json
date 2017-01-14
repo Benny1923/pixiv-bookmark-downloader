@@ -1,0 +1,20 @@
+{
+  "name": "pixiv-bookmark-downloader",
+  "version": "0.1.2",
+  "description": "The pixiv bookmark dwonload script",
+  "main": "main.js",
+  "dependencies": {
+    "async": "^2.1.4",
+    "cheerio": "^0.22.0",
+    "commander": "^2.9.0",
+    "fs": "^0.0.1-security",
+    "request": "^2.79.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Benny1923 <sln98106@gmail.com>",
+  "license": "ISC"
+}
