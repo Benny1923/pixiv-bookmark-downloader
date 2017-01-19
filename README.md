@@ -22,7 +22,9 @@ When process done. Result will output to file `result.json`
 
 >**This tool now only can get your public bookmark.**
 
+
 >Now you can use `-c` or `--config` to skip every run need the username and password
+
 >example: node main.js -c config.json
 
 What this tool can do?

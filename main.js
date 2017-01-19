@@ -7,7 +7,7 @@ var device_token = '', username = '', password = '';
 var data={};
 
 program
-  .version('Pixiv Bookmark Downloader 0.1.2 BETA 2017-01-14')
+  .version('Pixiv Bookmark Downloader 0.2.1 BETA 2017-01-14')
   .option('-u, --username, --user [username]', 'pixiv id/e-mail')
   .option('-p, --password [password]', 'password')
   .option('-c, --config [file]', 'login pixiv using config')
