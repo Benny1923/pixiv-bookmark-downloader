@@ -10,9 +10,19 @@ program
   .version('Pixiv Bookmark Downloader 0.1.2 BETA 2017-01-14')
   .option('-u, --username, --user [username]', 'pixiv id/e-mail')
   .option('-p, --password [password]', 'password')
+  .option('-c, --config [file]', 'login pixiv using config')
   .parse(process.argv);
 
-if(!program.username || !program.password){
+if (program.config && fs.existsSync(program.config)) {
+	fs.readFile(program.config, function read(err, data) {
+		if (err) {
+			throw err;
+		} else {
+			username = JSON.parse(data).username;
+			password = JSON.parse(data).password;
+		}
+	});
+} else if(!program.username || !program.password){
 	console.log("require username and password!");
   process.exit();
 } else if (program.username.length > 5 || program.password.length > 6) {
@@ -56,6 +66,22 @@ function Login() {
 	});
 }
 
+function GetDate() {
+	var dt = new Date();
+	var dtm, dtd;
+	if ((dt.getMonth() + 1).toString().length == 1) {
+		dtm = "0" + (dt.getMonth() + 1);
+	} else {
+		dtm = dt.getMonth() + 1;
+	}
+	if (dt.getDate().toString().length == 1) {
+		dtd = "0" + dt.getDate();
+	} else {
+		dtd = dt.getDate();
+	}
+	return dt.getFullYear() + "-" + dtm + "-" + dtd;
+}
+
 function Hello() {
 	request({
 		url: "http://pixiv.net/",
@@ -64,7 +90,7 @@ function Hello() {
 		if (!e) {
 			var $ = cheerio.load(b);
 			console.log("Hello! " + $('.user').html());
-			data = {"Version": 1.0, "User": $('.user').html(), "numofdata": 0, "data": {}};
+			data = {"Version": 1.0, "User": $('.user').html(), "Date": GetDate(), "numofdata": 0, "data": {}};
 			GetAllBookmark();
 		}
 	})
