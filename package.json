@@ -1,6 +1,6 @@
 {
   "name": "pixiv-bookmark-downloader",
-  "version": "0.1.2",
+  "version": "0.3.1",
   "description": "The pixiv bookmark dwonload script",
   "main": "main.js",
   "dependencies": {
@@ -8,7 +8,8 @@
     "cheerio": "^0.22.0",
     "commander": "^2.9.0",
     "fs": "^0.0.1-security",
-    "request": "^2.79.0"
+    "request": "^2.79.0",
+    "tough-cookie-filestore": "0.0.1"
   },
   "devDependencies": {},
   "scripts": {
@@ -16,5 +17,13 @@
   },
   "keywords": [],
   "author": "Benny1923 <sln98106@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Benny1923/pixiv-bookmark-downloader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Benny1923/pixiv-bookmark-downloader/issues"
+  },
+  "homepage": "https://github.com/Benny1923/pixiv-bookmark-downloader#readme"
 }

@@ -1,4 +1,6 @@
 var request = require("request").defaults({jar: true}),
+	CookieJar = require("tough-cookie").CookieJar,
+	FileCookieStore = require("tough-cookie-filestore"),
 	cheerio = require("cheerio"),
 	async = require("async"),
 	fs = require("fs"),
@@ -7,11 +9,24 @@ var device_token = '', username = '', password = '';
 var data={};
 
 program
-  .version('Pixiv Bookmark Downloader 0.2.1 BETA 2017-01-14')
+  .version('Pixiv Bookmark Downloader 0.3.1 BETA 2017-01-14')
   .option('-u, --username, --user [username]', 'pixiv id/e-mail')
   .option('-p, --password [password]', 'password')
   .option('-c, --config [file]', 'login pixiv using config')
   .parse(process.argv);
+
+var firstrun = false;
+// create the json file if it does not exist
+if(!fs.existsSync('cookie.json') || fs.readFileSync('cookie.json', 'utf-8') == ""){
+	fs.closeSync(fs.openSync('cookie.json', 'w'));
+	firstrun = true;
+} else if (program.username || program.password || program.config) {
+	fs.unlinkSync('cookie.json');
+	fs.closeSync(fs.openSync('cookie.json', 'w'));
+}
+
+var j = request.jar(new FileCookieStore('cookie.json'));
+request = request.defaults({jar:j});
 
 if (program.config && fs.existsSync(program.config)) {
 	fs.readFile(program.config, function read(err, data) {
@@ -20,33 +35,41 @@ if (program.config && fs.existsSync(program.config)) {
 		} else {
 			username = JSON.parse(data).username;
 			password = JSON.parse(data).password;
+			Gettoken();
 		}
 	});
 } else if(!program.username || !program.password){
-	console.log("require username and password!");
-  process.exit();
+	if (!firstrun) {
+		Hello();
+	} else {
+		console.log("require username and password!");
+		process.exit();
+	}
 } else if (program.username.length > 5 || program.password.length > 6) {
 	username = program.username;
 	password = program.password;
+	Gettoken();
 } else {
 	console.log("invalid username or password!");
 	process.exit();
 }
 
 /*request 制定三個回傳函數 error response body */
-request({
-	url: "https://accounts.pixiv.net/login",
-	method: "GET",
-}, function (e,r,b) {
-	if (!e) {
-		var $ = cheerio.load(b);
-		device_token = $('input[name="post_key"]').val();
-		console.log('get post_key/device _token:' + device_token);
-		Login();
-	} else {
-		console.log("ERROR at step 1(get post_key/device_token):" + e + b);
-	}
-});
+function Gettoken() {
+	request({
+		url: "https://accounts.pixiv.net/login",
+		method: "GET",
+	}, function (e,r,b) {
+		if (!e) {
+			var $ = cheerio.load(b);
+			device_token = $('input[name="post_key"]').val();
+			console.log('get post_key/device _token:' + device_token);
+			Login();
+		} else {
+			console.log("ERROR at step 1(get post_key/device_token):" + e + b);
+		}
+	});
+}
 
 function Login() {
 	request.post({
@@ -54,8 +77,9 @@ function Login() {
 		header: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'},
 		form: {'password': password, 'pixiv_id': username, 'post_key': device_token}
 	}, function (e,r,b) {
-		if (!e && JSON.parse(b).error == false && JSON.parse(b).body.success) {
-			cookie = request.cookie("device_token=" + device_token);
+		if (!e && JSON.parse(b).error == true) {
+			console.log("ERROR:" + b);
+		} else if (!e && JSON.parse(b).error == false && JSON.parse(b).body.success) {
 			console.log('Login success!');
 			Hello();
 		} else if (!e && JSON.parse(b).body.validation_errors.pixiv_id) {
@@ -89,9 +113,14 @@ function Hello() {
 	}, function (e,r,b) {
 		if (!e) {
 			var $ = cheerio.load(b);
-			console.log("Hello! " + $('.user').html());
-			data = {"Version": 1.0, "User": $('.user').html(), "Date": GetDate(), "numofdata": 0, "data": {}};
-			GetAllBookmark();
+			if ($('.user').eq(0).text()) {
+				console.log("Hello! " + $('.user').eq(0).text());
+				data = {"Version": 1.0, "User": $('.user').eq(0).text(), "Date": GetDate(), "numofdata": 0, "data": {}};
+				GetAllBookmark();
+			} else {
+				console.log("cookie is Expired. use login argument");
+				process.exit();
+			}
 		}
 	})
 }
