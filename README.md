@@ -18,17 +18,17 @@ Download your pixiv account bookmark using node.js
 
 The `[username]` and `[password]` is your pixiv account.
 
-Now you can use last time login session without username/password or config file.
+you can use last time login session without username/password or config file.
 
-more argument use `-h` or `--help` to check.
+use `-h` or `--help` to see more argument.
 
 When process done. Result will output to file `result.json`
 
 >**This tool now only can get your public bookmark.**
 
-What this tool can do?
+##Features
 - [x] Get all public bookmark
-- [ ] Download the image from bookmark(`result.json`) (Not done yet.)
+- [x] Download the image from bookmark(`result.json`) (using `-d` or `--download`)(now is **testing** and **unstable**)
 
 ### File
 | name ||
