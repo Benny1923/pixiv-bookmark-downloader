@@ -24,8 +24,6 @@ use `-h` or `--help` to see more argument.
 
 When process done. Result will output to file `result.json`
 
->**This tool now only can get your public bookmark.**
-
 ##Features
 - [x] Get all public bookmark
 - [x] Download the image from bookmark(`result.json`) (using `-d` or `--download`)(now is **testing** and **unstable**)
