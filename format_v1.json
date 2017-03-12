@@ -1,26 +1,28 @@
 {
-    "Version": 1.0,
+    "Version": 1.5,
     "User": "username",
     "date": "2017-01-01",
     "numofdata": 2,
-    "data": {
-        "1": {
+    "data": [
+        {
             "id": "55380141",
             "title": "Blue Star",
 			"tag": "",
             "author": "Rella",
 			"author_id": "",
 			"author_link": "",
-            "link": "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=55380141"
+            "link": "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=55380141",
+            "type": "illust"
         },
-        "2": {
+        {
             "id": "57196809",
             "title": "居酒屋街",
 			"tag": "",
             "author": "ポコ＠3日目東a-22a",
 			"author_id": "",
 			"author_link": "",
-            "link": "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=57196809"
+            "link": "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=57196809",
+            "type": "illust"
         }
-    }
+    ]
 }

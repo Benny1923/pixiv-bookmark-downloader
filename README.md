@@ -32,6 +32,7 @@ When process done. Result will output to file `result.json`
 | name ||
 |---|---|
 | main.js | Get all public bookmark script |
-| format_v1.json | result output example |
+| format_v1.json | result output example (ver 1.5) |
 | config_v1.json | config file example |
 | bookmark.js | Get bookmark single page example using jquery (browser debug ver.) |
+| page.js | Get image url example using jquery (browser debug ver.) |

@@ -5,9 +5,11 @@
   "main": "main.js",
   "dependencies": {
     "async": "^2.1.4",
+    "chalk": "^1.1.3",
     "cheerio": "^0.22.0",
     "commander": "^2.9.0",
     "fs": "^0.0.1-security",
+    "gauge": "^2.7.3",
     "request": "^2.79.0",
     "request-progress": "^3.0.0",
     "tough-cookie-filestore": "0.0.1"
