@@ -29,10 +29,10 @@ When process done. Result will output to file `result.json`
 - [x] Download the image from bookmark(`result.json`) (using `-d` or `--download`)(now is **testing** and **unstable**)
 
 ### File
-| name ||
+| name | Description |
 |---|---|
-| main.js | Get all public bookmark script |
-| format_v1.json | result output example (ver 1.5) |
-| config_v1.json | config file example |
-| bookmark.js | Get bookmark single page example using jquery (browser debug ver.) |
-| page.js | Get image url example using jquery (browser debug ver.) |
+| main.js | Get all public bookmark script. |
+| format_v1.json | result output example.(ver 1.5) |
+| config_v1.json | config file example. |
+| bookmark.js | Get bookmark single page example using jquery.(browser debug ver.) |
+| page.js | Get image url example using jquery.(browser debug ver.) |
