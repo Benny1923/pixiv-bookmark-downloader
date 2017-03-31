@@ -1,6 +1,6 @@
 {
   "name": "pixiv-bookmark-downloader",
-  "version": "0.5.1",
+  "version": "0.9.1",
   "description": "The pixiv bookmark dwonload script",
   "main": "main.js",
   "dependencies": {
@@ -20,7 +20,7 @@
   },
   "keywords": [],
   "author": "Benny1923 <sln98106@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Benny1923/pixiv-bookmark-downloader.git"

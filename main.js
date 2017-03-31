@@ -8,19 +8,33 @@ var request = require("request").defaults({ jar: true }),
 	program = require("commander"),
 	chalk = require('chalk'),
 	Gauge = require('gauge');
-var device_token = '', username = '', password = '';
+var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
 
 program
-	.version('Pixiv Bookmark Downloader 0.8.1')
+	.version('Pixiv Bookmark Downloader 0.9')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
-	.option('-d, --download', 'download image frome result.josn if file exist')
+	.option('-d, --download [result]', 'download image frome result. default is result.json')
+	.option('-t, --type [show/hide]', 'type of bookmark. default is show')
+	.option('-o, --out [file]', 'output result filename. default is result.json')
 	.parse(process.argv);
 
 var isdl = false;
 if (program.download) {
 	isdl = true;
+	if (program.download.length != 0) resio = program.download;
+}
+
+
+if (program.type) bookmark = program.type;
+if (bookmark != 'show' && bookmark != 'hide'){
+	console.log('invalid bookmark type!');
+	process.exit();
+}
+
+if (program.out && program.outputHelp.length != 0) {
+	resio = program.out;
 }
 
 var firstrun = false;
@@ -155,7 +169,7 @@ function GetBookmarkPage() {
 	},
 		function (next) {
 			request({
-				url: "http://www.pixiv.net/bookmark.php?rest=show&p=" + pages,
+				url: "http://www.pixiv.net/bookmark.php?rest="+ bookmark +"&p=" + pages,
 				method: "GET"
 			}, function (e, r, b) {
 				if (!e) {
@@ -179,8 +193,8 @@ function GetBookmarkPage() {
 			});
 		},
 		function (err) {
-			console.log("Done! Output result to result.json");
-			fs.writeFileSync("result.json", JSON.stringify(result, null, "\t"));
+			console.log("Done! Output result to " + resio);
+			fs.writeFileSync(resio, JSON.stringify(result, null, "\t"));
 			process.exit();
 		})
 }
@@ -221,15 +235,24 @@ function GetBookmarkData(body, pages,callback) {
 }
 
 function GetDataPage() {
-	if (!fs.existsSync('result.json')) {
-		console.log('result.json not exist!');
+	if (!fs.existsSync(resio)) {
+		console.log(resio +' is not exist!');
 		process.exit();
 	}
 	if (!fs.existsSync('image')) {
 		fs.mkdirSync("image");
 	}
 	var count = 0;
-	result = JSON.parse(fs.readFileSync('result.json'));
+	result = JSON.parse(fs.readFileSync(resio));
+	try {
+		if (!result.Version == 1.5) {
+			console.log('result format is invalid!');
+			process.exit();
+		}
+	} catch(e) {
+		console.log('result format is invalid!');
+		process.exit();
+	}
 	async.whilst(function () {
 		return count < result.numofdata
 	}, function (next) {
