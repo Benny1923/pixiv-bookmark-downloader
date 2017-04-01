@@ -11,7 +11,7 @@ var request = require("request").defaults({ jar: true }),
 var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
 
 program
-	.version('Pixiv Bookmark Downloader 0.9')
+	.version('Pixiv Bookmark Downloader 0.9.2')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -23,7 +23,7 @@ program
 var isdl = false;
 if (program.download) {
 	isdl = true;
-	if (program.download.length != 0) resio = program.download;
+	if (program.download.length != undefined) resio = program.download;
 }
 
 
