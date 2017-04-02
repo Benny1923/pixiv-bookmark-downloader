@@ -11,7 +11,7 @@ var request = require("request").defaults({ jar: true }),
 var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.2')
+	.version('Pixiv Bookmark Downloader 0.9.3')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -289,7 +289,7 @@ function Getillust(data, callback) {
 	}, function (e, r, b) {
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			if ($('img.original-image').attr('data-src')) {
+			if ($('img.original-image').attr('data-src') != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
 				}, function (next) {
@@ -324,7 +324,8 @@ function Getillustbig(data, callback) {
 	var trycount = 0;
 	request({
 		url: "http://www.pixiv.net/member_illust.php?mode=big&illust_id=" + data.id,
-		mothod: "GET"
+		mothod: "GET",
+		headers: { 'Referer': data.link }
 	}, function(e,r,b){
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
