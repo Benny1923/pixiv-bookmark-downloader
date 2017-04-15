@@ -1,3 +1,10 @@
+#!/usr/bin/env node
+
+/* pixiv-bookmark-downloader
+   a get your pixiv bookmark and download
+   MIT Licensed
+*/
+
 var request = require("request").defaults({ jar: true }),
 	progress = require('request-progress'),
 	CookieJar = require("tough-cookie").CookieJar,
@@ -33,7 +40,7 @@ if (bookmark != 'show' && bookmark != 'hide'){
 	process.exit();
 }
 
-if (program.out && program.outputHelp.length != 0) {
+if (program.out && program.out.length != 0) {
 	resio = program.out;
 }
 

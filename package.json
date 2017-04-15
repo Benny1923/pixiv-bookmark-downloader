@@ -1,6 +1,6 @@
 {
   "name": "pixiv-bookmark-downloader",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "The pixiv bookmark dwonload script",
   "main": "main.js",
   "dependencies": {
@@ -18,7 +18,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "bin": {
+    "pbd": "./bin/pbd.js"
+  },
+  "keywords": [
+    "pixiv",
+    "illust",
+    "manga",
+    "PBD",
+    "Bookmark",
+    "download"
+  ],
   "author": "Benny1923 <sln98106@gmail.com>",
   "license": "MIT",
   "repository": {
