@@ -5,7 +5,13 @@ Download your pixiv account bookmark using node.js
 ## Installation
 
 ```sh
-    ~$ npm install pixiv-bookmark-downloader -g
+    ~$ npm install -g pixiv-bookmark-downloader
+```
+
+## How to update
+
+```sh
+    ~$ npm update -g pixiv-bookmark-downloader
 ```
 
 ## Getting your public bookmark
@@ -14,17 +20,30 @@ Download your pixiv account bookmark using node.js
     ~$ pbd -u [username] -p [password]
 ```
 
+## or private bookmark
+
+```sh
+    ~$ pbd -u [username] -p [password] -t hide
+```
+
 The `[username]` and `[password]` is your pixiv account.
 
-you can use last time login session without username/password or config file.
+you can use last time login session without username/password or config file.(session will be storage in `cookie.json`)
+like:
+```sh
+   ~$ pbd
+```
 
 use `-h` or `--help` to see more argument.
 
 When process done. Result will output to file `result.json`
 
-##Features
+## Features
 - [x] Get all public/private bookmark
-- [x] Download image from bookmark(`result.json`) (using `-d` or `--download`)(now is **testing** and **unstable**)
+- [x] Download image from bookmark(`result.json`) (using `-d` or `--download`)
+      (now is **testing** and **unstable**. But don't worry it can't broke your account.)
+- [x] Download manga from bookmark
+- [ ] Download gif from bookmark
 
 ### File
 | name(path) | Description |
@@ -34,3 +53,14 @@ When process done. Result will output to file `result.json`
 | config_v1.json | config file example. |
 | bookmark.js | Get bookmark single page example using jquery.(browser debug ver.) |
 | page.js | Get image url example using jquery.(browser debug ver.) |
+
+### Requirements
+* async
+* chalk
+* cheerio
+* commander
+* fs
+* gauge
+* request
+* request-progress
+* tough-cookie-filestore

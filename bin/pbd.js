@@ -144,17 +144,17 @@ var result = {
 };
 function Hello() {
 	request({
-		url: "http://pixiv.net/",
+		url: "https://www.pixiv.net/",
 		method: "GET"
 	}, function (e, r, b) {
 		if (!e) {
 			var $ = cheerio.load(b);
-			if ($('.user').eq(0).text()) {
-				console.log("Hello! " + $('.user').eq(0).text());
+			if ($('.user-name').eq(0).text()) {
+				console.log("Hello! " + $('.user-name').eq(0).text());
 				if (isdl) {
 					GetDataPage();
 				} else {
-					result.User = $('.user').eq(0).text();
+					result.User = $('.user-name').eq(0).text();
 					GetBookmarkPage();
 				}
 			} else {
@@ -176,7 +176,7 @@ function GetBookmarkPage() {
 	},
 		function (next) {
 			request({
-				url: "http://www.pixiv.net/bookmark.php?rest="+ bookmark +"&p=" + pages,
+				url: "https://www.pixiv.net/bookmark.php?rest="+ bookmark +"&p=" + pages,
 				method: "GET"
 			}, function (e, r, b) {
 				if (!e) {
@@ -219,12 +219,12 @@ function GetBookmarkData(body, pages,callback) {
 				tag: items.eq(i).find('a > div > img').attr('data-tags'),
 				author: items.eq(i).children('a').eq(2).text(),
 				author_id: items.eq(i).children('a').eq(2).attr('data-user_id'),
-				author_link: "http://www.pixiv.net/" + items.eq(i).children('a').eq(2).attr('href'),
-				link: "http://www.pixiv.net/" + items.eq(i).find('a.work').attr('href'),
+				author_link: "https://www.pixiv.net/" + items.eq(i).children('a').eq(2).attr('href'),
+				link: "https://www.pixiv.net/" + items.eq(i).find('a.work').attr('href'),
 				type: (function () {
 					if (items.eq(i).find('a.work').hasClass('ugoku-illust')) {
 						return "gif"
-					} else if (items.eq(i).find('a > div > img').attr('data-src') == "http://source.pixiv.net/common/images/limit_mypixiv_s.png?20110520") {
+					} else if (items.eq(i).find('a > div > img').attr('data-src') == "https://source.pixiv.net/common/images/limit_mypixiv_s.png?20110520") {
 						return "friend-only"
 					} else if (items.eq(i).find('a.work').hasClass('multiple')) {
 						return "manga"
@@ -330,7 +330,7 @@ function Getillust(data, callback) {
 function Getillustbig(data, callback) {
 	var trycount = 0;
 	request({
-		url: "http://www.pixiv.net/member_illust.php?mode=big&illust_id=" + data.id,
+		url: "https://www.pixiv.net/member_illust.php?mode=big&illust_id=" + data.id,
 		mothod: "GET",
 		headers: { 'Referer': data.link }
 	}, function(e,r,b){
@@ -360,7 +360,7 @@ function Getillustbig(data, callback) {
 
 function Getmangalength(data, callback) {
 	request({
-		url: "http://www.pixiv.net/member_illust.php?mode=manga&illust_id=" + data.id,
+		url: "https://www.pixiv.net/member_illust.php?mode=manga&illust_id=" + data.id,
 		mothod: "GET"
 	}, function(e,r,b){
 		if (!e && r.statusCode == 200) {
@@ -378,7 +378,7 @@ function Getmanga(data, mlength, callback) {
 		return nowimg < mlength;
 	}, function (nextimg) {
 		request({
-			url: "http://www.pixiv.net/member_illust.php?mode=manga_big&illust_id=" + data.id + "&page=" + nowimg,
+			url: "https://www.pixiv.net/member_illust.php?mode=manga_big&illust_id=" + data.id + "&page=" + nowimg,
 			mothod: "GET"
 		}, function (e, r, b) {
 			if (!e && r.statusCode == 200) {
@@ -420,7 +420,7 @@ function GetImg(id, iurl, part, callback, fail) {
 	}
 	if (!fs.existsSync(dpath)) {
 		progress(request(iurl, {
-			headers: { 'Referer': "http://www.pixiv.net/" },
+			headers: { 'Referer': "https://www.pixiv.net/" },
 			method: "GET"
 		}), {}).on('response', function (response) {
 		}).on('progress', function (state) {
