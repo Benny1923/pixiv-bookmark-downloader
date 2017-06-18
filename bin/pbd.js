@@ -18,7 +18,7 @@ var request = require("request").defaults({ jar: true }),
 var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.3')
+	.version('Pixiv Bookmark Downloader 0.9.5')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
