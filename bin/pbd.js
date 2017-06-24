@@ -241,6 +241,8 @@ function GetBookmarkData(body, pages,callback) {
 	callback();
 }
 
+//download image function
+
 function GetDataPage() {
 	if (!fs.existsSync(resio)) {
 		console.log(resio +' is not exist!');
@@ -260,6 +262,7 @@ function GetDataPage() {
 		console.log('result format is invalid!');
 		process.exit();
 	}
+	allprocess = result.numofdata;
 	async.whilst(function () {
 		return count < result.numofdata
 	}, function (next) {
@@ -279,6 +282,7 @@ function GetDataPage() {
 				break;
 			default:
 				console.log(chalk.blue('[info]skip friend-only: ' + result.data[count].title + "(" + result.data[count].id + ")"));
+				nowprocess++;
 				count++;
 				next();
 				break;
@@ -300,6 +304,7 @@ function Getillust(data, callback) {
 				async.whilst(function () {
 					return trycount < 3;
 				}, function (next) {
+					message = data.title; nowprocess++;
 					GetImg(data.id, $('img.original-image').attr('data-src'), 0, function () {
 						console.log(chalk.green('[success]' + $('img.original-image').attr('data-src')));
 						trycount = 3;
@@ -339,6 +344,7 @@ function Getillustbig(data, callback) {
 			async.whilst(function () {
 				return trycount < 3;
 			}, function (next) {
+				message = data.title; nowprocess++;
 				GetImg(data.id, $('img').eq(0).attr('src'), 0, function () {
 					console.log(chalk.green('[success]' + $('img').eq(0).attr('src')));
 					trycount = 3;
@@ -365,6 +371,7 @@ function Getmangalength(data, callback) {
 	}, function(e,r,b){
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
+			nowprocess++;
 			Getmanga(data, $('a.full-size-container').length, function () {
 				callback();
 			})
@@ -386,6 +393,7 @@ function Getmanga(data, mlength, callback) {
 				async.whilst(function () {
 					return trycount < 3;
 				}, function (next) {
+					message = data.title + " " + (nowimg + 1) + "/" + mlength;
 					GetImg(data.id, $('img').eq(0).attr('src'), nowimg + 1, function () {
 						console.log(chalk.green('[success]' + $('img').attr('src')));
 						trycount = 3;
@@ -410,6 +418,13 @@ function Getmanga(data, mlength, callback) {
 	})
 }
 
+var processes = new Gauge();
+var message, nowprocess = 0, allprocess;
+function processbar(person) {
+	processes.pulse(message);
+	processes.show("Downlaoding... " + nowprocess + "/" + allprocess, nowprocess*(1/allprocess));
+}
+
 function GetImg(id, iurl, part, callback, fail) {
 	var statuscode, dpath,
 		ext = iurl.substr(iurl.lastIndexOf('.'), iurl.length);
@@ -424,7 +439,7 @@ function GetImg(id, iurl, part, callback, fail) {
 			method: "GET"
 		}), {}).on('response', function (response) {
 		}).on('progress', function (state) {
-
+			processbar(state.person);
 		}).on('error', function (err) {
 			fail(dpath);
 		}).on('end', function () {
