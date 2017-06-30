@@ -17,8 +17,11 @@ var request = require("request").defaults({ jar: true }),
 	Gauge = require('gauge');
 var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
 
+var info = require("../lib/info");
+info();
+
 program
-	.version('Pixiv Bookmark Downloader 0.9.5')
+	.version('Pixiv Bookmark Downloader 0.9.6')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -273,6 +276,12 @@ function GetDataPage() {
 					next();
 				});
 				break;
+			case "gif":
+				Getgif(result.data[count], function () {
+					count++;
+					next();
+				});
+				break;
 			case "manga":
 				if (!fs.existsSync('image/' + result.data[count].id)) fs.mkdirSync('image/'+ result.data[count].id);
 				Getmangalength(result.data[count], function() {
@@ -418,6 +427,40 @@ function Getmanga(data, mlength, callback) {
 	})
 }
 
+function Getgif(data, callback) {
+	var trycount = 0;
+	request({
+		url: data.link,
+		mothod: "GET"
+	}, function (e, r, b){
+		if (!e && r.statusCode == 200) {
+			var $ = cheerio.load(b);
+			var gifzip = $('#wrapper > script').eq(0).text().substring($('#wrapper > script').eq(0).text().indexOf("ugokuIllustFullscreenData")+37,$('#wrapper > script').eq(0).text().lastIndexOf("1920x1080.zip")+13).replace(/\\\//ig, "/");
+			if (gifzip != undefined) {
+				async.whilst(function () {
+					return trycount < 3;
+				}, function (next) {
+					message = data.title; nowprocess++;
+					GetImg(data.id, gifzip, 0, function () {
+						console.log(chalk.green('[success]' + gifzip));
+						trycount = 3;
+						next();
+					}, function (dpath) {
+						console.log(chalk.red('[fail]' + gifzip));
+						trycount++;
+						if (trycount == 3) {
+							fs.unlinkSync(dpath);
+						}
+						next();
+					});
+				}, function (err) {
+					callback();
+				});
+			}
+		}
+	})
+}
+
 var processes = new Gauge();
 var message, nowprocess = 0, allprocess;
 function processbar(person) {
@@ -446,6 +489,8 @@ function GetImg(id, iurl, part, callback, fail) {
 			callback();
 		}).pipe(fs.createWriteStream(dpath))
 	} else {
+		message = '';
+		processbar(0);
 		callback();
 	}
 }

@@ -16,3 +16,6 @@ $('a.full-size-container').length
 
 //多張作品大圖取得方法
 $('img').eq(0).attr('src')
+
+//動圖取得方法(zip) update at 2017-06-30
+$('#wrapper > script').eq(0).text().substring($('#wrapper > script').eq(0).text().indexOf("ugokuIllustFullscreenData")+37,$('#wrapper > script').eq(0).text().lastIndexOf("1920x1080.zip")+13).replace(/\\\//ig, "/")

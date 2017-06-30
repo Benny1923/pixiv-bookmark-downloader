@@ -1,0 +1,17 @@
+#test not public
+
+config.json
+cookie.json
+result.json
+launch.json
+image
+
+#npm don't need
+
+.gitattributes
+.gitignore
+bookmark.js
+page.js
+config_v1.json
+format_v1.json
+README.md

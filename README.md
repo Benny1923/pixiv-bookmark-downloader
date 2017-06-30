@@ -12,6 +12,8 @@ Download your pixiv account bookmark using node.js
 
 ```sh
     ~$ npm update -g pixiv-bookmark-downloader
+    or
+    ~$ npm install pixiv-bookmark-downloader@latest -g
 ```
 
 ## Getting your public bookmark
@@ -43,7 +45,7 @@ When process done. Result will output to file `result.json`
 - [x] Download image from bookmark(`result.json`) (using `-d` or `--download`)
       (now is **testing** and **unstable**. But don't worry it can't broke your account.)
 - [x] Download manga from bookmark
-- [ ] Download gif from bookmark
+- [x] Download gif from bookmark
 
 ### File
 | name(path) | Description |

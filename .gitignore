@@ -83,3 +83,11 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#test not public
+
+config.json
+cookie.json
+result.json
+launch.json
+image

@@ -1,0 +1,14 @@
+///////////////////////////////////////////////////////////////////////
+//                                                                   //
+//                 pixiv-bookmark-downloader v0.9.6                  //
+//                                                                   //
+//                  The pixiv Bookmark Manage Tool                   //
+//                                                                   //
+//  Version : 0.9.6                                                  //
+//  Author  : Benny1923                                              //
+//                                                                   //
+//  More details on site :                                           //
+//  Github: https://github.com/Benny1923/pixiv-bookmark-downloader   //
+//  npmjs: https://www.npmjs.com/package/pixiv-bookmark-downloader   //
+//                                                                   //
+///////////////////////////////////////////////////////////////////////
