@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /* pixiv-bookmark-downloader
-   a get your pixiv bookmark and download
+   get your pixiv bookmark and download
    MIT Licensed
 */
 
@@ -21,7 +21,7 @@ var info = require("../lib/info");
 info();
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.6')
+	.version('Pixiv Bookmark Downloader 0.9.7')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -213,9 +213,9 @@ function GetBookmarkData(body, pages,callback) {
 	var $ = cheerio.load(body);
 	var items = $('div.display_editable_works > ul._image-items > li.image-item');
 	for (i = 0; i < items.length; i++) {
-		if (items.eq(i).find('div > img').attr('data-id') != 0) {
+		if (items.eq(i).children("a").length > 2) {
 			result.data.push({
-				serial: i + 1,
+				serial: i,
 				pages: pages,
 				id: items.eq(i).find('a > div > img').attr('data-id'),
 				title: items.eq(i).find('a > h1.title').text(),
