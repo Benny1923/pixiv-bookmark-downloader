@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 //                                                                   //
-//                 pixiv-bookmark-downloader v0.9.6                  //
+//                 pixiv-bookmark-downloader v0.9.7                  //
 //                                                                   //
 //                  The pixiv Bookmark Manage Tool                   //
 //                                                                   //
