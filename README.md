@@ -42,8 +42,9 @@ When process done. Result will output to file `result.json`
 
 ## Features
 - [x] Get all public/private bookmark
-- [x] Download image from bookmark(`result.json`) (using `-d` or `--download`)
+- [ ] Download image from bookmark(`result.json`) (using `-d` or `--download`)
       (now is **testing** and **unstable**. But don't worry it can't broke your account.)
+      (**Attention!!** since 2018/04/04, pixiv create new UI ,for now this feature is not available. see [this post](https://www.pixiv.net/info.php?id=4532))
 - [x] Download manga from bookmark
 - [x] Download gif from bookmark
 
