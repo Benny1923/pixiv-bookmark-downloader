@@ -1,6 +1,6 @@
 {
   "name": "pixiv-bookmark-downloader",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "The pixiv bookmark dwonload script",
   "main": "main.js",
   "dependencies": {

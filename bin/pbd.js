@@ -21,7 +21,7 @@ var info = require("../lib/info");
 info();
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.7')
+	.version('Pixiv Bookmark Downloader 0.9.8')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -309,17 +309,18 @@ function Getillust(data, callback) {
 	}, function (e, r, b) {
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			if ($('img.original-image').attr('data-src') != undefined) {
+			var original_url = $("link[rel='manifest']").prev().text().substring($("link[rel='manifest']").prev().text().indexOf("\"original\"")+12,$("link[rel='manifest']").prev().text().indexOf(data.id + "_p0",$("link[rel='manifest']").prev().text().indexOf("\"original\"")) + data.id.toString().length + 7).replace(/\\\//ig, "/");
+			if (original_url != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
 				}, function (next) {
 					message = data.title; nowprocess++;
-					GetImg(data.id, $('img.original-image').attr('data-src'), 0, function () {
-						console.log(chalk.green('[success]' + $('img.original-image').attr('data-src')));
+					GetImg(data.id, original_url, 0, function () {
+						console.log(chalk.green('[success]' + original_url));
 						trycount = 3;
 						next();
 					}, function (dpath) {
-						console.log(chalk.red('[fail]' + $('img.original-image').attr('data-src')));
+						console.log(chalk.red('[fail]' + original_url));
 						trycount++;
 						if (trycount == 3) {
 							fs.unlinkSync(dpath);
@@ -381,7 +382,7 @@ function Getmangalength(data, callback) {
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
 			nowprocess++;
-			Getmanga(data, $('a.full-size-container').length, function () {
+			Getmanga(data, $("._icon-full-size").length, function () {
 				callback();
 			})
 		}
@@ -435,7 +436,7 @@ function Getgif(data, callback) {
 	}, function (e, r, b){
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			var gifzip = $('#wrapper > script').eq(0).text().substring($('#wrapper > script').eq(0).text().indexOf("ugokuIllustFullscreenData")+37,$('#wrapper > script').eq(0).text().lastIndexOf("1920x1080.zip")+13).replace(/\\\//ig, "/");
+			var gifzip = ($("link[rel='manifest']").prev().text().substring($("link[rel='manifest']").prev().text().indexOf("\"original\"")+12,$("link[rel='manifest']").prev().text().indexOf(data.id + "_ugoira0",$("link[rel='manifest']").prev().text().indexOf("\"original\""))+data.id.toString().length + 7).replace(/\\\//ig, "/") + "600x600.zip").replace(/img-original/ig, "img-zip-ugoira")
 			if (gifzip != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
