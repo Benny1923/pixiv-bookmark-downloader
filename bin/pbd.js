@@ -21,7 +21,7 @@ var info = require("../lib/info");
 info();
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.8')
+	.version('Pixiv Bookmark Downloader 0.9.9')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -309,7 +309,7 @@ function Getillust(data, callback) {
 	}, function (e, r, b) {
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			var original_url = $("link[rel='manifest']").prev().text().substring($("link[rel='manifest']").prev().text().indexOf("\"original\"")+12,$("link[rel='manifest']").prev().text().indexOf(data.id + "_p0",$("link[rel='manifest']").prev().text().indexOf("\"original\"")) + data.id.toString().length + 7).replace(/\\\//ig, "/");
+			var original_url = $("link[rel='manifest']").prev().text().substring($("link[rel='manifest']").prev().text().indexOf("\"original\":")+12,$("link[rel='manifest']").prev().text().indexOf(data.id + "_p0",$("link[rel='manifest']").prev().text().indexOf("\"original\":")) + data.id.toString().length + 7).replace(/\\\//ig, "/");
 			if (original_url != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
@@ -436,7 +436,7 @@ function Getgif(data, callback) {
 	}, function (e, r, b){
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			var gifzip = ($("link[rel='manifest']").prev().text().substring($("link[rel='manifest']").prev().text().indexOf("\"original\"")+12,$("link[rel='manifest']").prev().text().indexOf(data.id + "_ugoira0",$("link[rel='manifest']").prev().text().indexOf("\"original\""))+data.id.toString().length + 7).replace(/\\\//ig, "/") + "600x600.zip").replace(/img-original/ig, "img-zip-ugoira")
+			var gifzip = ($("link[rel='manifest']").prev().text().substring($("link[rel='manifest']").prev().text().indexOf("\"original\":")+12,$("link[rel='manifest']").prev().text().indexOf(data.id + "_ugoira0",$("link[rel='manifest']").prev().text().indexOf("\"original\":"))+data.id.toString().length + 7).replace(/\\\//ig, "/") + "600x600.zip").replace(/img-original/ig, "img-zip-ugoira")
 			if (gifzip != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
