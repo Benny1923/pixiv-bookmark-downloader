@@ -4,7 +4,7 @@
 //                                                                   //
 //                  The pixiv Bookmark Manage Tool                   //
 //                                                                   //
-//  Version : 0.9.9                                                  //
+//  Version : 0.9.10                                                  //
 //  Author  : Benny1923                                              //
 //                                                                   //
 //  More details on site :                                           //
