@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////
 //                                                                   //
-//                 pixiv-bookmark-downloader v0.9.9                  //
+//                 pixiv-bookmark-downloader v0.9.10                 //
 //                                                                   //
 //                  The pixiv Bookmark Manage Tool                   //
 //                                                                   //
-//  Version : 0.9.10                                                  //
+//  Version : 0.9.11                                                 //
 //  Author  : Benny1923                                              //
 //                                                                   //
 //  More details on site :                                           //

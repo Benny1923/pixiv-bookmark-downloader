@@ -21,7 +21,7 @@ var info = require("../lib/info");
 info();
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.9')
+	.version('Pixiv Bookmark Downloader 0.9.11')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
@@ -309,7 +309,7 @@ function Getillust(data, callback) {
 	}, function (e, r, b) {
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			var original_url = $("script").eq(7).text().substring($("script").eq(7).text().indexOf("\"original\":")+12,$("script").eq(7).text().indexOf(data.id + "_p0",$("script").eq(7).text().indexOf("\"original\":")) + data.id.toString().length + 7).replace(/\\\//ig, "/");
+			var original_url = $("script").eq(5).text().substring($("script").eq(5).text().indexOf("\"original\":")+12,$("script").eq(5).text().indexOf(data.id + "_p0",$("script").eq(5).text().indexOf("\"original\":")) + data.id.toString().length + 7).replace(/\\\//ig, "/");
 			if (original_url != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
@@ -436,7 +436,7 @@ function Getgif(data, callback) {
 	}, function (e, r, b){
 		if (!e && r.statusCode == 200) {
 			var $ = cheerio.load(b);
-			var gifzip = ($("script").eq(7).text().substring($("script").eq(7).text().indexOf("\"original\":")+12,$("script").eq(7).text().indexOf(data.id + "_ugoira0",$("script").eq(7).text().indexOf("\"original\":"))+data.id.toString().length + 7).replace(/\\\//ig, "/") + "600x600.zip").replace(/img-original/ig, "img-zip-ugoira")
+			var gifzip = ($("script").eq(5).text().substring($("script").eq(5).text().indexOf("\"original\":")+12,$("script").eq(5).text().indexOf(data.id + "_ugoira0",$("script").eq(5).text().indexOf("\"original\":"))+data.id.toString().length + 7).replace(/\\\//ig, "/") + "600x600.zip").replace(/img-original/ig, "img-zip-ugoira")
 			if (gifzip != undefined) {
 				async.whilst(function () {
 					return trycount < 3;
