@@ -7,27 +7,24 @@
 
 var request = require("request").defaults({ jar: true }),
 	progress = require('request-progress'),
-	CookieJar = require("tough-cookie").CookieJar,
-	FileCookieStore = require("tough-cookie-filestore"),
 	cheerio = require("cheerio"),
 	async = require("async"),
 	fs = require("fs"),
 	program = require("commander"),
 	chalk = require('chalk'),
 	Gauge = require('gauge');
+var info = require("../lib/info");
 var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
 
-var info = require("../lib/info");
-info();
-
 program
-	.version('Pixiv Bookmark Downloader 0.9.11')
+	.version('Pixiv Bookmark Downloader 0.9.12')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
 	.option('-d, --download [result]', 'download image frome result. default is result.json')
 	.option('-t, --type [show/hide]', 'type of bookmark. default is show')
-	.option('-o, --out [file]', 'output result filename. default is result.json')
+	.option('-o, --output [file]', 'output result filename. default is result.json')
+	.option('--debug', 'debug flag, add debug info to output')
 	.parse(process.argv);
 
 var isdl = false;
@@ -46,18 +43,8 @@ if (bookmark != 'show' && bookmark != 'hide'){
 if (program.out && program.out.length != 0) {
 	resio = program.out;
 }
-
-var firstrun = false;
-// create the json file if it does not exist
-if (!fs.existsSync('cookie.json') || fs.readFileSync('cookie.json', 'utf-8') == "") {
-	fs.closeSync(fs.openSync('cookie.json', 'w'));
-	firstrun = true;
-} else if (program.username || program.password || program.config) {
-	fs.unlinkSync('cookie.json');
-	fs.closeSync(fs.openSync('cookie.json', 'w'));
-}
-
-var j = request.jar(new FileCookieStore('cookie.json'));
+var firstrun = true; //棄用tugh-cookie-filestore
+var j = request.jar();
 request = request.defaults({ jar: j });
 
 if (program.config && fs.existsSync(program.config)) {
@@ -67,6 +54,7 @@ if (program.config && fs.existsSync(program.config)) {
 		} else {
 			username = JSON.parse(data).username;
 			password = JSON.parse(data).password;
+			info();
 			Gettoken();
 		}
 	});
@@ -80,6 +68,7 @@ if (program.config && fs.existsSync(program.config)) {
 } else if (program.username.length > 5 || program.password.length > 6) {
 	username = program.username;
 	password = program.password;
+	info();
 	Gettoken();
 } else {
 	console.log("invalid username or password!");
@@ -95,7 +84,7 @@ function Gettoken() {
 		if (!e) {
 			var $ = cheerio.load(b);
 			device_token = $('input[name="post_key"]').val();
-			console.log('get post_key/device _token:' + device_token);
+			console.log('get post_key/device_token:' + device_token);
 			Login();
 		} else {
 			console.log("ERROR at step 1(get post_key/device_token):" + e + b);
@@ -125,16 +114,8 @@ function Login() {
 function GetDate() {
 	var dt = new Date();
 	var dtm, dtd;
-	if ((dt.getMonth() + 1).toString().length == 1) {
-		dtm = "0" + (dt.getMonth() + 1);
-	} else {
-		dtm = dt.getMonth() + 1;
-	}
-	if (dt.getDate().toString().length == 1) {
-		dtd = "0" + dt.getDate();
-	} else {
-		dtd = dt.getDate();
-	}
+	dtm = dt.getMonth() < 10 ? "0"+ ( dt.getMonth() + 1 ) : dt.getMonth() + 1;
+	dtd = dt.getDate() < 10 ? "0" + dt.getDate() : dt.getDate();
 	return dt.getFullYear() + "-" + dtm + "-" + dtd;
 }
 
@@ -143,7 +124,7 @@ var result = {
 	User: "Empty",
 	date: GetDate(),
 	numofdata: 0,
-	data: new Array
+	data: []
 };
 function Hello() {
 	request({
@@ -214,9 +195,7 @@ function GetBookmarkData(body, pages,callback) {
 	var items = $('div.display_editable_works > ul._image-items > li.image-item');
 	for (i = 0; i < items.length; i++) {
 		if (items.eq(i).children("a").length > 2) {
-			result.data.push({
-				serial: i,
-				pages: pages,
+            let temp = {
 				id: items.eq(i).find('a > div > img').attr('data-id'),
 				title: items.eq(i).find('a > h1.title').text(),
 				tag: items.eq(i).find('a > div > img').attr('data-tags'),
@@ -235,7 +214,12 @@ function GetBookmarkData(body, pages,callback) {
 						return "illust"
 					}
 				})()
-			});
+			};
+            if (program.debug) {
+                temp['serial'] = i;
+                temp['pages'] = pages;
+            }
+			result.data.push(temp);
 			result.numofdata++;
 			var last = result.data[result.data.length - 1];
 			console.log(result.numofdata + ": " + chalk.blue(last.title) + "(" + last.id + ")" + " by " + chalk.green(last.author));

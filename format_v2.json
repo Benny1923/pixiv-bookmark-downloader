@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "name": "Benny1923",
+    "date": "2018-11-03",
+    "tags":[],
+    "length": 1,
+    "data": [
+        {
+            "id": "00000000",
+            "title": "N/A",
+            "tag": "",
+            "author": "N/A",
+            "author_id": "000000",
+            "author_link": "",
+            "link": "",
+            "type": "illust",
+            "isdownloaded": true,
+            "fileinfo": [{
+                "fullname": "00000000",
+                "ext": "jpg",
+                "height": "1080",
+                "width": "1920",
+                "size": 123456,
+            }]
+        }
+    ]
+}

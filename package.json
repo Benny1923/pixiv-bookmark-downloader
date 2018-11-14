@@ -1,6 +1,6 @@
 {
   "name": "pixiv-bookmark-downloader",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "The pixiv bookmark dwonload script",
   "main": "main.js",
   "dependencies": {
@@ -10,16 +10,17 @@
     "commander": "^2.15.1",
     "fs": "^0.0.1-security",
     "gauge": "^2.7.4",
+    "image-size": "^0.6.3",
     "request": "^2.87.0",
-    "request-progress": "^3.0.0",
-    "tough-cookie-filestore": "0.0.1"
+    "request-progress": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "pbd": "./bin/pbd.js"
+    "pbd": "./bin/pbd.js",
+    "pbd-renew": "./bin/renew.js"
   },
   "keywords": [
     "pixiv",
