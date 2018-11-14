@@ -1,3 +1,9 @@
+#!/usr/bin/env node
+
+/* pbd-renew
+   convert PBD result from v1.5 to v2.0
+*/
+
 var fs = require("fs");
 var path = require("path");
 var program = require("commander");
