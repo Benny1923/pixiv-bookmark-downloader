@@ -85,9 +85,11 @@ $RECYCLE.BIN/
 *.lnk
 
 #test not public
-
 config.json
 cookie.json
 result.json
 launch.json
 image
+
+#npm
+package-lock.json

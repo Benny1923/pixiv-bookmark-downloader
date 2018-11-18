@@ -14,16 +14,28 @@ var request = require("request").defaults({ jar: true }),
 	chalk = require('chalk'),
 	Gauge = require('gauge');
 var info = require("../lib/info");
-var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json';
+var getInfo = require("../lib/renewlib.js");
+
+var device_token = '', username = '', password = '', bookmark="show", resio = 'result.json', mode='update';
+
+var result = {
+	Version: "2.0.0",
+	name: "Empty",
+	date: GetDate(),
+	tags: [],
+	length: 0,
+	data: []
+};
 
 program
-	.version('Pixiv Bookmark Downloader 0.9.12')
+	.version('0.9.13')
 	.option('-u, --username, --user [username]', 'pixiv id/e-mail')
 	.option('-p, --password [password]', 'password')
 	.option('-c, --config [file]', 'login pixiv using config')
 	.option('-d, --download [result]', 'download image frome result. default is result.json')
 	.option('-t, --type [show/hide]', 'type of bookmark. default is show')
 	.option('-o, --output [file]', 'output result filename. default is result.json')
+	.option('-m, --mode [new/update]', 'result output mode, if result file exists default is update')
 	.option('--debug', 'debug flag, add debug info to output')
 	.parse(process.argv);
 
@@ -40,9 +52,25 @@ if (bookmark != 'show' && bookmark != 'hide'){
 	process.exit();
 }
 
-if (program.out && program.out.length != 0) {
-	resio = program.out;
+if (program.output && program.output.length != 0) {
+	resio = program.output;
 }
+
+if (program.mode) mode = program.mode;
+if (mode != 'new' && mode != 'update') {
+	console.log('invalid mode type!');
+	process.exit();
+} else if (!fs.existsSync(resio) && mode == 'update') {
+	console.log(resio + "is not exists, can't use update mode");
+	process.exit();
+} else {
+	result = JSON.parse(fs.readFileSync(resio));
+	if (result.version == undefined) {
+		console.log('unsupport version. please use pbd-renew to update ' + resio);
+		process.exit();
+	}
+}
+
 var firstrun = true; //棄用tugh-cookie-filestore
 var j = request.jar();
 request = request.defaults({ jar: j });
@@ -74,6 +102,7 @@ if (program.config && fs.existsSync(program.config)) {
 	console.log("invalid username or password!");
 	process.exit();
 }
+
 
 /*request 制定三個回傳函數 error response body */
 function Gettoken() {
@@ -119,13 +148,7 @@ function GetDate() {
 	return dt.getFullYear() + "-" + dtm + "-" + dtd;
 }
 
-var result = {
-	Version: 1.5,
-	User: "Empty",
-	date: GetDate(),
-	numofdata: 0,
-	data: []
-};
+
 function Hello() {
 	request({
 		url: "https://www.pixiv.net/",
@@ -138,7 +161,11 @@ function Hello() {
 				if (isdl) {
 					GetDataPage();
 				} else {
-					result.User = $('.user-name').eq(0).text();
+					if (mode=='update' && $('.user-name').eq(0).text() != result.name) {
+						console.log('output mode is update, but username is not match. abort');
+						process.exit();
+					}
+					result.name = $('.user-name').eq(0).text();
 					GetBookmarkPage();
 				}
 			} else {
@@ -149,11 +176,15 @@ function Hello() {
 	})
 }
 
+var lastid = mode=='update' ? result.data[0].id : '00000000';
 
 function GetBookmarkPage() {
 	var trycount = 0;
 	var isEnd = false;
 	var pages = 1;
+	if (mode='update') var old_data = result.data;
+	result.length = 0;
+	result.data = [];
 	console.log("Start getting bookmark...");
 	async.whilst(function () {
 		return !isEnd;
@@ -167,7 +198,8 @@ function GetBookmarkPage() {
 					trycount = 0;
 					var $ = cheerio.load(b);
 					if ($('span.next > a').attr('href') == undefined) isEnd = true;
-					GetBookmarkData(b, pages, function () {
+					GetBookmarkData(b, pages, function (stopflag = false) {
+						isEnd = (isEnd||stopflag);
 						pages++;
 						next();
 					})
@@ -184,6 +216,13 @@ function GetBookmarkPage() {
 			});
 		},
 		function (err) {
+			if (mode='update'){
+				console.log('add ' + result.length + ' data row.');
+				old_data.forEach((item)=>{
+					result.data.push(item);
+					result.length++;
+				})
+			}
 			console.log("Done! Output result to " + resio);
 			fs.writeFileSync(resio, JSON.stringify(result, null, "\t"));
 			process.exit();
@@ -193,8 +232,13 @@ function GetBookmarkPage() {
 function GetBookmarkData(body, pages,callback) {
 	var $ = cheerio.load(body);
 	var items = $('div.display_editable_works > ul._image-items > li.image-item');
+	var stopflag = false;
 	for (i = 0; i < items.length; i++) {
 		if (items.eq(i).children("a").length > 2) {
+			if (lastid == items.eq(i).find('a > div > img').attr('data-id')) {
+				stopflag = true;
+				break;
+			}
             let temp = {
 				id: items.eq(i).find('a > div > img').attr('data-id'),
 				title: items.eq(i).find('a > h1.title').text(),
@@ -213,19 +257,21 @@ function GetBookmarkData(body, pages,callback) {
 					} else {
 						return "illust"
 					}
-				})()
+				})(),
+				isdownloaded: false
 			};
             if (program.debug) {
                 temp['serial'] = i;
                 temp['pages'] = pages;
             }
 			result.data.push(temp);
-			result.numofdata++;
-			var last = result.data[result.data.length - 1];
-			console.log(result.numofdata + ": " + chalk.blue(last.title) + "(" + last.id + ")" + " by " + chalk.green(last.author));
+			let tags = temp["tag"].split(" ");
+			result.tags = getInfo.insertTags(result.tags, tags);
+			result.length++;
+			console.log(result.length + ": " + chalk.blue(temp.title) + "(" + temp.id + ")" + " by " + chalk.green(temp.author));
 		}
 	}
-	callback();
+	callback(stopflag);
 }
 
 //download image function

@@ -18,7 +18,7 @@ const default_conf = {
 var data;
 
 program
-    .version("1.0.0")
+    .version("1.0.1")
     .description("convert PBD result from v1.5 to v2.0")
     .usage("<file> [options]")
     .arguments("<file>")
@@ -42,10 +42,13 @@ try {
 }
 
 //check version
-if (data.version >= 2.0) {
-    console.log("result is up to date")
-    process.exit();
-}
+try {
+    if (data.version != undefined || data.version.toString().match(/^[0-9]{1,2}/)[0] >= 2) {
+        console.log("result is up to date")
+        process.exit();
+    }
+    
+} catch (e) {}
 
 //print start message
 console.log("starting upgrader...");
@@ -60,7 +63,10 @@ var new_data = {
 };
 
 //list base directory
-let fileList = fs.readdirSync(default_conf.ImageDir);
+var fileList;
+try {
+    fileList = fs.readdirSync(default_conf.ImageDir);
+} catch (e){}
 
 data.data.forEach(function(item, index, array){
     //tarnsferring data
@@ -107,4 +113,5 @@ data.data.forEach(function(item, index, array){
 
 new_data.length = new_data.data.length;
 
+console.log('success upgrade! now save and exit');
 fs.writeFileSync(default_conf.OutputFile, JSON.stringify(new_data, null, "\t"));
