@@ -6,7 +6,7 @@ Download your pixiv account bookmark using node.js
 
 I will stop maintenance this repository.<br>
 you can use alternative program [PixivUtil2](https://github.com/Nandaka/PixivUtil2)<br>
-(Mabye you already hear about it. it better than this. more feature. more stable. hight update frequency)
+(Maybe you already hear about it. it better than this. more feature. more stable. high update frequency)
 
 ## Installation
 
